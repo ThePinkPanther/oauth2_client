@@ -1,10 +1,12 @@
 package org.pinkpanther.oauth2.client;
 
 import org.pinkpanther.oauth2.client.util.GrantResponseParser;
+import org.pinkpanther.oauth2.client.util.Oauth2Exception;
 import org.pinkpanther.oauth2.client.util.Oauth2ResponseException;
 import org.pinkpanther.oauth2.client.util.PostRequestFactory;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * @author ben
@@ -25,7 +27,7 @@ public class ClientCredentialsFlow extends Oauth2Flow {
     }
 
     @Override
-    public GrantResponse authorizeGrant() throws Oauth2ResponseException, IOException {
+    public GrantResponse authorizeGrant() throws Oauth2Exception, IOException {
 
         GrantRequest grant = new GrantRequest();
         grant.setClientId(clientID);
@@ -37,7 +39,12 @@ public class ClientCredentialsFlow extends Oauth2Flow {
 
         request.setEndpoint(tokenEndpoint);
 
-        ResponseWrapper response = sendRequest(request);
+        ResponseWrapper response = null;
+        try {
+            response = sendRequest(request);
+        } catch (URISyntaxException e) {
+            throw new Oauth2Exception(e.getMessage(),e);
+        }
 
         return responseParser.parse(response);
 

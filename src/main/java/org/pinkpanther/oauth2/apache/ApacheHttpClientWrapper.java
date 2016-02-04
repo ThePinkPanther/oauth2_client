@@ -1,13 +1,19 @@
-package org.pinkpanther.oauth2.client;
+package org.pinkpanther.oauth2.apache;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.util.EntityUtils;
+import org.pinkpanther.oauth2.client.HttpClientWrapper;
+import org.pinkpanther.oauth2.client.RequestWrapper;
+import org.pinkpanther.oauth2.client.ResponseWrapper;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * @author ben
@@ -16,29 +22,20 @@ import java.io.IOException;
 public class ApacheHttpClientWrapper implements HttpClientWrapper {
 
     private final HttpClient client;
+    private final static ApacheRequestConverter converter = new ApacheRequestConverter();
 
     public ApacheHttpClientWrapper(HttpClient client) {
         this.client = client;
     }
 
-    public ResponseWrapper send(RequestWrapper requestWrapper) throws IOException {
+    public ResponseWrapper send(RequestWrapper requestWrapper) throws IOException, URISyntaxException {
 
-        HttpRequestBase request;
-        switch (requestWrapper.getMethod()) {
-            case GET:
-                request = new HttpGet(requestWrapper.getEndpoint());
-                break;
-            default:
-            case POST:
-                request = new HttpPost(requestWrapper.getEndpoint());
-                break;
-        }
+        HttpRequestBase request = converter.convert(requestWrapper);
 
         HttpResponse response = client.execute(request);
 
-        BasicResponseHandler handler = new BasicResponseHandler();
+        String body = EntityUtils.toString(response.getEntity());
 
-        String body = handler.handleResponse(response);
         int status = response.getStatusLine().getStatusCode();
 
         return new ResponseWrapper(body, status);

@@ -1,6 +1,7 @@
 package org.pinkpanther.oauth2.client;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * @author ben
@@ -8,6 +9,6 @@ import java.io.IOException;
  */
 public interface HttpClientWrapper {
 
-    public ResponseWrapper send(RequestWrapper request) throws IOException;
+    public ResponseWrapper send(RequestWrapper request) throws IOException, URISyntaxException;
 
 }

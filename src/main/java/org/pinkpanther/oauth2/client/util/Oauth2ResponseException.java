@@ -7,7 +7,7 @@ import org.pinkpanther.oauth2.client.ErrorType;
  * @author ben
  * @version 1.0
  */
-public class Oauth2ResponseException extends Exception {
+public class Oauth2ResponseException extends Oauth2Exception {
 
     private final ErrorResponse errorResponse;
     private final ErrorType errorType;

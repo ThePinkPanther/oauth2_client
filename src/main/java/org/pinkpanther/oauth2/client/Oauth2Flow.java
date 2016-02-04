@@ -1,11 +1,13 @@
 package org.pinkpanther.oauth2.client;
 
 import org.pinkpanther.oauth2.client.util.GrantResponseParser;
+import org.pinkpanther.oauth2.client.util.Oauth2Exception;
 import org.pinkpanther.oauth2.client.util.Oauth2ResponseException;
 import org.pinkpanther.oauth2.client.util.PostRequestFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * @author ben
@@ -24,7 +26,8 @@ public abstract class Oauth2Flow {
     protected final static GrantResponseParser responseParser = new GrantResponseParser();
     protected final static PostRequestFactory requestFactory = new PostRequestFactory();
 
-    protected ResponseWrapper sendRequest(RequestWrapper request) throws IOException {
+    protected ResponseWrapper sendRequest(RequestWrapper request)
+            throws IOException, URISyntaxException {
         return client.send(request);
     }
 
@@ -40,7 +43,7 @@ public abstract class Oauth2Flow {
         throw new NotImplementedException();
     }
 
-    public AccessToken grant() throws Oauth2ResponseException, IOException {
+    public AccessToken grant() throws Oauth2Exception, IOException {
         if (session.sessionExpired()) {
             String refreshToken = session.getRefreshToken();
             if (refreshToken != null) {
@@ -54,6 +57,6 @@ public abstract class Oauth2Flow {
         }
     }
 
-    public abstract GrantResponse authorizeGrant() throws Oauth2ResponseException, IOException;
+    public abstract GrantResponse authorizeGrant() throws Oauth2Exception, IOException;
 
 }

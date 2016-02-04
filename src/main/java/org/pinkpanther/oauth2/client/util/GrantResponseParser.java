@@ -1,5 +1,7 @@
 package org.pinkpanther.oauth2.client.util;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pinkpanther.oauth2.client.ErrorResponse;
 import org.pinkpanther.oauth2.client.ErrorType;
